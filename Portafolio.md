@@ -6,5 +6,5 @@ Tecnologías usadas: HTML5, CSS3
 [![GIF](https://i.imgur.com/DcAagtG.gif)](https://youtu.be/TeCdlfU-mBU)
 
 ![](http://i.imgur.com/Ssfp7.gif)
-![](http://i.imgur.com/DcAagtG.gif)
+![Imgur](https://i.imgur.com/cBC0VEb.gifv)
 ![(https://i.imgur.com/DcAagtG.gif)](https://youtu.be/TeCdlfU-mBU)
