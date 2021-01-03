@@ -1,6 +1,6 @@
 # Oleg Sabetskyy
 
-Desarrollador Full Stack.
+Programador Full Stack.
 
 Me gusta resolver problemas mediante la informática, i soy igual de capaz con el back-end como el front-end. Además de eso, estoy dispuesto y motivado a aprender nuevos lenguajes/frameworks/tecnologías, así que si usáis una tecnología que desconozco estaré encantado de aprender-la.
 
