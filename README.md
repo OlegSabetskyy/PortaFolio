@@ -6,7 +6,7 @@ Me gusta resolver problemas mediante la informática, i soy igual de capaz con e
 
 Aquí podéis ver algunos de los proyectos que he desarrollado:
 
-- Portafolio: [mi portafolio]()
+- Portafolio: [mi portafolio](./Portafolio.md)
 
 Si tenéis alguna duda o queréis conocer más acerca de mí no dudéis en poneros en contacto conmigo:
 
