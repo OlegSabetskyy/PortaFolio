@@ -55,7 +55,7 @@ org.eclipse.core.internal.resources.ResourceException: Problems encountered whil
 	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:154)
 	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:244)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
-Contains: Could not delete 'D:\PortaFolio\Codigo_fuente\Java\FX_Client_Server\bin\DadesCompartidaServidor.class'.
+Contains: Could not delete 'D:\PortaFolio\src\Java\FX_Client_Server\bin\DadesCompartidaServidor.class'.
 org.eclipse.core.runtime.CoreException: Problems encountered while deleting files.
 	at org.eclipse.core.internal.filesystem.local.LocalFile.delete(LocalFile.java:142)
 	at org.eclipse.core.internal.resources.ResourceTree.internalDeleteFile(ResourceTree.java:313)
@@ -78,8 +78,8 @@ org.eclipse.core.runtime.CoreException: Problems encountered while deleting file
 	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:154)
 	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:244)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
-Contains: Could not delete: D:\PortaFolio\Codigo_fuente\Java\FX_Client_Server\bin\DadesCompartidaServidor.class.
-java.nio.file.FileSystemException: D:\PortaFolio\Codigo_fuente\Java\FX_Client_Server\bin\DadesCompartidaServidor.class: El proceso no tiene acceso al archivo porque está siendo utilizado por otro proceso
+Contains: Could not delete: D:\PortaFolio\src\Java\FX_Client_Server\bin\DadesCompartidaServidor.class.
+java.nio.file.FileSystemException: D:\PortaFolio\src\Java\FX_Client_Server\bin\DadesCompartidaServidor.class: El proceso no tiene acceso al archivo porque está siendo utilizado por otro proceso
 	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:92)
 	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
 	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
@@ -111,7 +111,7 @@ java.nio.file.FileSystemException: D:\PortaFolio\Codigo_fuente\Java\FX_Client_Se
 !SUBENTRY 1 org.eclipse.core.resources 4 273 2021-01-02 17:32:37.754
 !MESSAGE Problems encountered while deleting resources.
 !SUBENTRY 2 org.eclipse.core.resources 4 273 2021-01-02 17:32:37.754
-!MESSAGE Could not delete 'D:\PortaFolio\Codigo_fuente\Java\FX_Client_Server\bin\DadesCompartidaServidor.class'.
+!MESSAGE Could not delete 'D:\PortaFolio\src\Java\FX_Client_Server\bin\DadesCompartidaServidor.class'.
 !STACK 1
 org.eclipse.core.runtime.CoreException: Problems encountered while deleting files.
 	at org.eclipse.core.internal.filesystem.local.LocalFile.delete(LocalFile.java:142)
@@ -135,8 +135,8 @@ org.eclipse.core.runtime.CoreException: Problems encountered while deleting file
 	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:154)
 	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:244)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
-Contains: Could not delete: D:\PortaFolio\Codigo_fuente\Java\FX_Client_Server\bin\DadesCompartidaServidor.class.
-java.nio.file.FileSystemException: D:\PortaFolio\Codigo_fuente\Java\FX_Client_Server\bin\DadesCompartidaServidor.class: El proceso no tiene acceso al archivo porque está siendo utilizado por otro proceso
+Contains: Could not delete: D:\PortaFolio\src\Java\FX_Client_Server\bin\DadesCompartidaServidor.class.
+java.nio.file.FileSystemException: D:\PortaFolio\src\Java\FX_Client_Server\bin\DadesCompartidaServidor.class: El proceso no tiene acceso al archivo porque está siendo utilizado por otro proceso
 	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:92)
 	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
 	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
@@ -168,9 +168,9 @@ java.nio.file.FileSystemException: D:\PortaFolio\Codigo_fuente\Java\FX_Client_Se
 !SUBENTRY 3 org.eclipse.core.filesystem 4 273 2021-01-02 17:32:37.754
 !MESSAGE Problems encountered while deleting files.
 !SUBENTRY 4 org.eclipse.core.filesystem 4 273 2021-01-02 17:32:37.754
-!MESSAGE Could not delete: D:\PortaFolio\Codigo_fuente\Java\FX_Client_Server\bin\DadesCompartidaServidor.class.
+!MESSAGE Could not delete: D:\PortaFolio\src\Java\FX_Client_Server\bin\DadesCompartidaServidor.class.
 !STACK 0
-java.nio.file.FileSystemException: D:\PortaFolio\Codigo_fuente\Java\FX_Client_Server\bin\DadesCompartidaServidor.class: El proceso no tiene acceso al archivo porque está siendo utilizado por otro proceso
+java.nio.file.FileSystemException: D:\PortaFolio\src\Java\FX_Client_Server\bin\DadesCompartidaServidor.class: El proceso no tiene acceso al archivo porque está siendo utilizado por otro proceso
 	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:92)
 	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
 	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
