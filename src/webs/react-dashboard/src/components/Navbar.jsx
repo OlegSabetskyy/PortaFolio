@@ -1,50 +1,142 @@
 import {
     ChartBarIcon,
     UserIcon,
-    Bars3CenterLeftIcon
+    Bars3CenterLeftIcon,
+    XMarkIcon
 } from "@heroicons/react/24/outline";
+import { useState } from "react";
 import { ReactComponent as GithubOutlineIcon } from "../assets/github-outline.svg";
+import { NavLink } from "react-router-dom";
+import ConditionalWrapper from "./ConditionalWrapper";
 
 const Navbar = () => {
+    let [isExpanded, setIsExpanded] = useState(false);
+    let closeDrawer = () => setIsExpanded(false);
+
     return (
-        <nav>
-            <div className="flex px-4 py-3">
-                <button className="flex flex-col items-center group">
+        <nav className="">
+            <div className="flex px-4 py-3 sm:hidden">
+                <button
+                    className="
+                        flex flex-col items-center group 
+                    "
+                    onClick={() => setIsExpanded((isExpanded) => !isExpanded)}
+                >
                     <Bars3CenterLeftIcon className={"w-8 text-slate-900"} />
                 </button>
             </div>
-            <ul className="flex flex-col bg-slate-900 px-2 gap-y-7 h-screen pt-8">
-                <Item
+
+            <ul
+                className={`
+                        flex flex-col bg-slate-900 p-2 z-10 absolute w-80 bottom-0 top-0 transition-all 
+                        sm:static sm:left-0 sm:w-auto sm:h-screen
+                        ${isExpanded ? "left-0" : "-left-80"}
+                    `}
+            >
+                <ItemButton
+                    Icon={XMarkIcon}
+                    onClick={closeDrawer}
+                    closeDrawer={closeDrawer}
+                />
+                <ItemLink
                     Icon={GithubOutlineIcon}
                     text="Portfolio"
-                    isActive={false}
+                    external={true}
+                    to="https://github.com/OlegSabetskyy/PortaFolio"
+                    closeDrawer={closeDrawer}
                 />
-                <Item Icon={ChartBarIcon} text="Dashboard" isActive={true} />
-                <Item Icon={UserIcon} text="Clients" isActive={false} />
+                <ItemLink
+                    Icon={ChartBarIcon}
+                    text="Dashboard"
+                    to="/"
+                    closeDrawer={closeDrawer}
+                />
+                <ItemLink
+                    Icon={UserIcon}
+                    text="Clients"
+                    to="/clients"
+                    closeDrawer={closeDrawer}
+                />
             </ul>
+            <div
+                className={`
+                    absolute inset-0 bg-black/[.5] z-0 transition-all sm:hidden
+                    ${
+                        isExpanded
+                            ? "opacity-100 visible"
+                            : "opacity-0 invisible"
+                    }
+                `}
+                onClick={closeDrawer}
+            />
         </nav>
     );
 };
 
-const Item = ({ Icon, text, isActive }) => {
+const ItemLink = ({ Icon, text, to, external = false, closeDrawer }) => {
+    let linkClasses =
+        "flex gap-3 group px-3 py-4 sm:flex-col sm:items-center sm:py-7 sm:gap-0 sm:px-1 sm:py-4 sm:gap-1";
+
     return (
-        <li className="flex flex-col">
-            <button className="flex flex-col items-center group">
-                <Icon
-                    className={`group-hover:text-white ${
-                        isActive ? "text-white" : "text-slate-300"
-                    } w-8 `}
-                />
+        <ItemWrapper>
+            <ConditionalWrapper
+                wrappers={[
+                    external
+                        ? (children) => (
+                              <a
+                                  href={to}
+                                  className={`${linkClasses} text-slate-300`}
+                                  target="_blank"
+                              >
+                                  {children}
+                              </a>
+                          )
+                        : (children) => (
+                              <NavLink
+                                  to={to}
+                                  className={({ isActive }) =>
+                                      `${linkClasses} ${
+                                          isActive
+                                              ? "text-white"
+                                              : "text-slate-300"
+                                      }`
+                                  }
+                                  onClick={closeDrawer}
+                              >
+                                  {children}
+                              </NavLink>
+                          )
+                ]}
+            >
+                <Icon className={`group-hover:text-white w-8`} />
                 <p
-                    className={`text-sm group-hover:text-white ${
-                        isActive ? "text-white" : "text-slate-300"
-                    }`}
+                    className={`text-sm group-hover:text-white flex items-center`}
                 >
                     {text}
                 </p>
-            </button>
-        </li>
+            </ConditionalWrapper>
+        </ItemWrapper>
     );
 };
+
+const ItemButton = ({ Icon, onClick }) => {
+    return (
+        <ItemWrapper>
+            <button
+                type="button"
+                className="px-3 py-4 group sm:hidden"
+                onClick={onClick}
+            >
+                <Icon
+                    className={`group-hover:text-white text-slate-300 w-8 `}
+                />
+            </button>
+        </ItemWrapper>
+    );
+};
+
+const ItemWrapper = ({ children }) => (
+    <li className="flex flex-col">{children}</li>
+);
 
 export default Navbar;
