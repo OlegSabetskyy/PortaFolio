@@ -142,7 +142,7 @@ const App = () => {
 -   Index routes match when a parent route matches but none of the other children match
 
 ```js
-import { Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 function App() {
     return (

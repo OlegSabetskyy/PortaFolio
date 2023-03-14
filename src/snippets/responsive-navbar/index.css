@@ -1,0 +1,201 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    /* colors */
+    --navbar-bg-color: hsl(0, 0%, 15%);
+    --navbar-text-color: hsl(0, 0%, 85%);
+    --navbar-text-color-focus: white;
+    --navbar-bg-contrast: hsl(0, 0%, 25%);
+    --navbar-animation: all 0.2s ease-in-out;
+
+    /* breakpoint & sizes */
+    --navbar-max-width: 1024px;
+    --navbar-height: 64px;
+}
+
+body {
+    height: 100vh;
+}
+
+#navbar {
+    display: flex;
+    justify-content: center;
+
+    position: fixed;
+    height: var(--navbar-height);
+    background-color: var(--navbar-bg-color);
+    left: 0;
+    right: 0;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    align-items: center;
+    max-width: var(--navbar-max-width);
+    width: 100%;
+    margin: 0 1rem;
+}
+
+.navbar-item {
+    width: 100%;
+}
+
+.navbar-item a {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0.5rem;
+}
+
+.home-link,
+.navbar-link {
+    color: var(--navbar-text-color);
+    text-decoration: none;
+    display: flex;
+    font-weight: 400;
+    align-items: center;
+}
+
+.home-link:is(:focus, :hover) {
+    color: var(--navbar-text-color-focus);
+}
+
+.navbar-link {
+    justify-content: center;
+    width: 100%;
+}
+
+.navbar-link:is(:focus, :hover) {
+    color: var(--navbar-text-color-focus);
+    background-color: var(--navbar-bg-contrast);
+}
+
+.navbar-logo {
+    width: 150px;
+    margin-inline-start: 0.5em;
+}
+
+#navbar-toggle {
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.icon-bar {
+    width: 25px;
+    height: 2px;
+    margin: 3px;
+    background-color: var(--navbar-text-color);
+    transition: var(--navbar-animation);
+}
+
+#navbar-toggle:is(:focus, :hover) .icon-bar {
+    background-color: var(--navbar-text-color-focus);
+}
+
+#navbar-toggle[aria-expanded="true"] .icon-bar:is(:first-child, :last-child) {
+    position: absolute;
+    margin: 0;
+    width: 30px;
+}
+#navbar-toggle[aria-expanded="true"] .icon-bar:first-child {
+    transform: rotate(45deg);
+}
+#navbar-toggle[aria-expanded="true"] .icon-bar:nth-child(2) {
+    opacity: 0;
+}
+#navbar-toggle[aria-expanded="true"] .icon-bar:last-child {
+    transform: rotate(-45deg);
+}
+
+#navbar-menu {
+    position: fixed;
+    top: var(--navbar-height);
+    bottom: 0;
+    opacity: 0;
+    width: 100%;
+    max-width: 300px;
+    left: -300px;
+    transition: var(--navbar-animation);
+}
+
+#navbar-toggle[aria-expanded="true"] ~ #navbar-menu {
+    background-color: var(--navbar-bg-color);
+    opacity: 1;
+    visibility: visible;
+    left: 0;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.navbar-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 1.4rem;
+    border-radius: 5px;
+    transition: var(--navbar-animation);
+}
+
+#navbar-background {
+    background-color: rgba(0, 0, 0, 0.35);
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--navbar-height);
+    bottom: 0;
+    z-index: -1;
+    transition: var(--navbar-animation);
+}
+
+#navbar-toggle[aria-expanded="true"] ~ #navbar-background {
+    visibility: visible;
+    opacity: 1;
+}
+
+@media screen and (min-width: 700px) {
+    #navbar-toggle {
+        display: none;
+    }
+
+    #navbar-menu {
+        display: flex;
+        visibility: visible;
+        opacity: 1;
+        position: relative;
+        top: 0;
+        height: 100%;
+        width: auto;
+        left: auto;
+        box-shadow: none !important;
+    }
+
+    .navbar-items {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+
+        margin: 0;
+        position: relative;
+    }
+
+    #navbar-background {
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
