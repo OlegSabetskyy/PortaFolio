@@ -8,13 +8,14 @@ import { useState } from "react";
 import { ReactComponent as GithubOutlineIcon } from "../assets/github-outline.svg";
 import { NavLink } from "react-router-dom";
 import ConditionalWrapper from "./ConditionalWrapper";
+import "./navbar.css";
 
 const Navbar = () => {
     let [isExpanded, setIsExpanded] = useState(false);
     let closeDrawer = () => setIsExpanded(false);
 
     return (
-        <nav className="">
+        <nav id="nav" is-expanded={isExpanded.toString()}>
             <div className="flex px-4 py-3 sm:hidden">
                 <button
                     className="
@@ -27,10 +28,10 @@ const Navbar = () => {
             </div>
 
             <ul
+                id="navbar-icons"
                 className={`
                         flex flex-col bg-slate-900 p-2 z-10 absolute w-80 bottom-0 top-0 transition-all 
                         sm:static sm:left-0 sm:w-auto sm:h-screen
-                        ${isExpanded ? "left-0" : "-left-80"}
                     `}
             >
                 <ItemButton
@@ -59,14 +60,8 @@ const Navbar = () => {
                 />
             </ul>
             <div
-                className={`
-                    absolute inset-0 bg-black/[.5] z-0 transition-all sm:hidden
-                    ${
-                        isExpanded
-                            ? "opacity-100 visible"
-                            : "opacity-0 invisible"
-                    }
-                `}
+                id="navbar-backdrop"
+                className="absolute inset-0 bg-black/[.5] z-0 transition-all sm:hidden"
                 onClick={closeDrawer}
             />
         </nav>
