@@ -45,7 +45,7 @@ const DoughnutChartCard = () => {
                         data={data}
                         redraw={true}
                         options={options}
-                        plugins={[htmlLegendPlugin, hideOnInit]}
+                        plugins={[htmlLegendPlugin, showOnInit]}
                         // display none bc on first render it appears too big
                         style={{ display: "none" }}
                     />
@@ -56,7 +56,7 @@ const DoughnutChartCard = () => {
     );
 };
 
-const hideOnInit = {
+const showOnInit = {
     id: "hideOnInit",
     beforeDraw(chart, args, options) {
         setTimeout(() => {
