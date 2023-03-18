@@ -6,12 +6,3 @@
     opacity: 100;
     visibility: visible;
 }
-
-#navbar-icons {
-    left: -320px;
-}
-
-#navbar-backdrop {
-    opacity: 0;
-    visibility: hidden;
-}

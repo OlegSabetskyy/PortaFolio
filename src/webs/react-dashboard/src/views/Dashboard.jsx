@@ -1,16 +1,18 @@
-import { formatCurrency } from "../utils/format";
-import Card from "../components/Card";
+import LineChartCard from "../components/LineChartCard";
+import BarChartCard from "../components/BarChartCard";
+import DoughnutChartCard from "../components/DoughnutChartCard";
+import SalesPercentageCard from "../components/SalesPercentageCard";
 
 const Dashboard = () => {
     return (
-        <Card paddingSize={"big"}>
-            <div className="flex flex-col gap-2">
-                <h1 className="text-slate-900 text-4xl font-black">
-                    {formatCurrency(1234)}
-                </h1>
-                <p className="text-slate-900 text-2xl">Sales</p>
+        <div className="flex flex-col gap-4 sm:gap-8">
+            <LineChartCard />
+            <BarChartCard />
+            <div className="flex flex-col gap-4 sm:flex-row sm:gap-8">
+                <DoughnutChartCard />
+                <SalesPercentageCard />
             </div>
-        </Card>
+        </div>
     );
 };
 

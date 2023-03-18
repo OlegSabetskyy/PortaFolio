@@ -8,18 +8,22 @@ import { useState } from "react";
 import { ReactComponent as GithubOutlineIcon } from "../assets/github-outline.svg";
 import { NavLink } from "react-router-dom";
 import ConditionalWrapper from "./ConditionalWrapper";
-import "./navbar.css";
+import "../styles/navbar.css";
 
 const Navbar = () => {
     let [isExpanded, setIsExpanded] = useState(false);
     let closeDrawer = () => setIsExpanded(false);
 
     return (
-        <nav id="nav" is-expanded={isExpanded.toString()}>
-            <div className="flex px-4 py-3 sm:hidden">
+        <nav
+            id="nav"
+            className="sticky top-0 bg-white"
+            is-expanded={isExpanded.toString()}
+        >
+            <div className="flex px-4 py-3 w-screen sm:hidden">
                 <button
                     className="
-                        flex flex-col items-center group 
+                        flex flex-col items-center group
                     "
                     onClick={() => setIsExpanded((isExpanded) => !isExpanded)}
                 >
@@ -30,8 +34,8 @@ const Navbar = () => {
             <ul
                 id="navbar-icons"
                 className={`
-                        flex flex-col bg-slate-900 p-2 z-10 absolute w-80 bottom-0 top-0 transition-all 
-                        sm:static sm:left-0 sm:w-auto sm:h-screen
+                        flex flex-col bg-slate-900 p-2 z-20 absolute w-80 h-screen top-0 transition-all -left-80
+                        sm:sticky sm:left-0 sm:w-auto
                     `}
             >
                 <ItemButton
@@ -61,7 +65,7 @@ const Navbar = () => {
             </ul>
             <div
                 id="navbar-backdrop"
-                className="absolute inset-0 bg-black/[.5] z-0 transition-all sm:hidden"
+                className="absolute inset-0 bg-black/[.5] z-10 transition-all opacity-0 invisible h-screen sm:hidden"
                 onClick={closeDrawer}
             />
         </nav>
@@ -70,7 +74,7 @@ const Navbar = () => {
 
 const ItemLink = ({ Icon, text, to, external = false, closeDrawer }) => {
     let linkClasses =
-        "flex gap-3 group px-3 py-4 sm:flex-col sm:items-center sm:py-7 sm:gap-0 sm:px-1 sm:py-4 sm:gap-1";
+        "flex gap-3 group px-3 py-4 sm:flex-col sm:items-center sm:py-4 sm:gap-0 sm:px-1 sm:py-4 sm:gap-1";
 
     return (
         <ItemWrapper>

@@ -1,11 +1,8 @@
-const Card = ({ paddingSize, children }) => {
-    let paddingClass;
-
-    if (paddingSize == "medium") paddingClass = "p-7";
-    else paddingSize = "p-8";
-
+const Card = ({ children }) => {
     return (
-        <div className={`flex flex-col bg-white rounded-2xl ${paddingSize}`}>
+        <div
+            className={`flex flex-col justify-between bg-white rounded-2xl p-4 h-60`}
+        >
             {children}
         </div>
     );
