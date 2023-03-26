@@ -17,7 +17,7 @@ const Navbar = () => {
     return (
         <nav
             id="nav"
-            className="sticky top-0 bg-white"
+            className="sticky top-0 bg-white z-10"
             is-expanded={isExpanded.toString()}
         >
             <div className="flex px-4 py-3 w-screen sm:hidden">
@@ -34,7 +34,7 @@ const Navbar = () => {
             <ul
                 id="navbar-icons"
                 className={`
-                        flex flex-col bg-slate-900 p-2 z-20 absolute w-80 h-screen top-0 transition-all -left-80
+                        flex flex-col bg-slate-900 p-2 z-20 absolute w-80 h-screen top-0 transition-all -left-80 ease-in-out
                         sm:sticky sm:left-0 sm:w-auto
                     `}
             >
@@ -65,7 +65,7 @@ const Navbar = () => {
             </ul>
             <div
                 id="navbar-backdrop"
-                className="absolute inset-0 bg-black/[.5] z-10 transition-all opacity-0 invisible h-screen sm:hidden"
+                className="absolute inset-0 bg-black/[.5] transition-all opacity-0 invisible h-screen ease-in-out sm:hidden"
                 onClick={closeDrawer}
             />
         </nav>
@@ -122,7 +122,7 @@ const ItemButton = ({ Icon, onClick }) => {
     return (
         <ItemWrapper>
             <button
-                type="button"
+                variant="button"
                 className="px-3 py-4 group sm:hidden"
                 onClick={onClick}
             >
