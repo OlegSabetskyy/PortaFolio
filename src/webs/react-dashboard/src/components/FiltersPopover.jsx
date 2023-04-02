@@ -1,65 +1,22 @@
+import { forwardRef, useEffect } from "react";
 import { FunnelIcon } from "@heroicons/react/24/outline";
 import Button from "./Button";
 import { Popover, Transition, Listbox } from "@headlessui/react";
-import { Fragment, useEffect, useRef, useState } from "react";
-import { ChevronDownIcon, CheckIcon } from "@heroicons/react/20/solid";
-import rangeSlider from "range-slider-input";
-import "range-slider-input/dist/style.css";
-import "../styles/filters-btn.css";
+import { Fragment, useState } from "react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { availableCountries, availableEmailProviders } from "../data/TableData";
+import { useDispatch, useSelector } from "react-redux/es/exports";
+import {
+    resetFilters,
+    updateCountryFilter,
+    updateEmailProviderFilter,
+    updateIdFilter
+} from "../features/clientsTableSlice";
+import * as Slider from "@radix-ui/react-slider";
 
-const FiltersBtn = () => {
-    const rangeSliderContainer = useRef(null);
-    const initRangeSliderValues = [20, 100];
-    const [rangeSliderValues, setRangeSliderValues] = useState(
-        initRangeSliderValues
-    );
-    const [rangeSliderTextPositions, setRangeSliderTextPositions] = useState(
-        initRangeSliderValues
-    );
-    let rangeSliderObj = null;
-
-    // inits range slider
-    const initRangeSlider = () => {
-        rangeSliderObj = rangeSlider(rangeSliderContainer.current, {
-            min: 1,
-            max: 100,
-            value: initRangeSliderValues,
-            onInput: onRangeSliderUpdate
-        });
-
-        updateRangeSliderTooltipPositions();
-    };
-    const updateRangeSliderTooltipPositions = () => {
-        setRangeSliderTextPositions(
-            [
-                ...document
-                    .getElementById("range-slider")
-                    .querySelectorAll(".range-slider__thumb")
-            ]
-                // sort the obtained range-slider's to get first the one most to the left
-                .sort((thumb, thumb2) => {
-                    const getCalculatedLeftCSSProperty = (elem) =>
-                        parseFloat(
-                            window
-                                .getComputedStyle(elem, null)
-                                .getPropertyValue("left")
-                                .replace("px", "")
-                        );
-
-                    return getCalculatedLeftCSSProperty(thumb) <
-                        getCalculatedLeftCSSProperty(thumb2)
-                        ? -1
-                        : 0;
-                })
-                // returns the left properties
-                .map((thumb) => thumb.style.left)
-        );
-    };
-
-    const onRangeSliderUpdate = (values) => {
-        setRangeSliderValues(values);
-        updateRangeSliderTooltipPositions();
-    };
+const FiltersPopover = () => {
+    const clients = useSelector((state) => state.clientsTable.value.clients);
+    const dispatch = useDispatch();
 
     return (
         <Popover className="relative">
@@ -71,12 +28,6 @@ const FiltersBtn = () => {
             </Popover.Button>
             <Transition
                 as={Fragment}
-                beforeEnter={initRangeSlider}
-                beforeLeave={() =>
-                    rangeSliderObj &&
-                    rangeSliderObj.removeGlobalEventListeners()
-                }
-                afterLeave={() => setRangeSliderValues(initRangeSliderValues)}
                 enter="transition ease-out duration-200"
                 enterFrom="opacity-0 translate-y-2"
                 enterTo="opacity-100 translate-y-0"
@@ -91,28 +42,12 @@ const FiltersBtn = () => {
 
                     <div className="flex flex-col gap-4">
                         {/* range slider */}
-                        <div className="flex flex-col">
-                            <SectionTitle>Id</SectionTitle>
-                            <div id="range-slider" ref={rangeSliderContainer} />
-                            <div className="relative mb-4">
-                                <p
-                                    className="absolute text-base text-slate-500 top-2"
-                                    style={{
-                                        left: `calc(${rangeSliderTextPositions[0]} - 10px)`
-                                    }}
-                                >
-                                    {rangeSliderValues[0]}
-                                </p>
-                                <p
-                                    className="absolute text-base text-slate-500 top-2"
-                                    style={{
-                                        left: `calc(${rangeSliderTextPositions[1]} - 10px)`
-                                    }}
-                                >
-                                    {rangeSliderValues[1]}
-                                </p>
+                        {clients.length ? (
+                            <div className="flex flex-col gap-2 mb-4">
+                                <SectionTitle>Id</SectionTitle>
+                                <CustomSlider />
                             </div>
-                        </div>
+                        ) : undefined}
 
                         {/* country filter */}
                         <div className="flex flex-col gap-2">
@@ -126,11 +61,14 @@ const FiltersBtn = () => {
                             <EmailProviderSelect />
                         </div>
                     </div>
-                    <div className="flex justify-end gap-2">
-                        <Button variant="secondary" className="rounded-2xl">
+                    <div className="flex justify-end">
+                        <Button
+                            variant="secondary"
+                            className="rounded-2xl"
+                            onClick={() => dispatch(resetFilters())}
+                        >
                             Reset
                         </Button>
-                        <Button className="rounded-2xl">Apply</Button>
                     </div>
                 </Popover.Panel>
             </Transition>
@@ -138,24 +76,71 @@ const FiltersBtn = () => {
     );
 };
 
+const CustomSlider = forwardRef((props, forwardedRef) => {
+    const clients = useSelector((state) => state.clientsTable.value.clients);
+    const rangeSliderValues = useSelector(
+        (state) => state.clientsTable.value.filters.id
+    );
+    const rangeSliderValuesArray = [
+        rangeSliderValues.min,
+        rangeSliderValues.max
+    ];
+
+    // for performance reasons, it's faster to use useState than directly invoke dispatch onValueChange
+    const [currentSliderValues, setCurrentSliderValues] = useState(
+        rangeSliderValuesArray
+    );
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        setCurrentSliderValues([rangeSliderValues.min, rangeSliderValues.max]);
+    }, [rangeSliderValues]);
+
+    return (
+        <Slider.Root
+            defaultValue={rangeSliderValuesArray}
+            value={currentSliderValues}
+            onValueChange={setCurrentSliderValues}
+            onValueCommit={([min, max]) =>
+                dispatch(updateIdFilter({ min, max }))
+            }
+            min={clients[0].id}
+            max={clients.slice(-1)[0].id}
+            {...props}
+            ref={forwardedRef}
+            className="relative flex items-center h-4 touch-none select-none"
+        >
+            <Slider.Track className="relative flex flex-grow items-center bg-blue-50 h-1">
+                <Slider.Range className="absolute bg-blue-500 h-1 rounded-full" />
+            </Slider.Track>
+            <Slider.Thumb className="flex rounded-full bg-blue-600 w-4 h-4 cursor-pointer focus:shadow-[0px_0px_0px_4px_rgba(0,0,0,0.15)] outline-none">
+                <span className="text-base text-slate-500 mt-5 select-none w-full text-center">
+                    {currentSliderValues[0]}
+                </span>
+            </Slider.Thumb>
+            <Slider.Thumb className="flex rounded-full bg-blue-600 w-4 h-4 cursor-pointer focus:shadow-[0px_0px_0px_4px_rgba(0,0,0,0.15)] outline-none">
+                <span className="text-base text-slate-500 mt-5 select-none w-full text-center">
+                    {currentSliderValues[1]}
+                </span>
+            </Slider.Thumb>
+        </Slider.Root>
+    );
+});
+
 const SectionTitle = ({ children }) => {
     return <p className="text-base text-slate-900 capitalize">{children}</p>;
 };
 
 const CountrySelect = () => {
-    const availableCountries = [
-        "Spain",
-        "Ukraine",
-        "Germany",
-        "France",
-        "Belgium"
-    ];
-    const [selectedCountry, setSelectedCountry] = useState();
+    const selectedCountry = useSelector(
+        (state) => state.clientsTable.value.filters.country
+    );
+    const dispatch = useDispatch();
 
     return (
         <Listbox
             value={selectedCountry}
-            onChange={setSelectedCountry}
+            onChange={(value) => dispatch(updateCountryFilter(value))}
             className="relative"
             as="div"
         >
@@ -246,18 +231,15 @@ const CountrySelect = () => {
 };
 
 const EmailProviderSelect = () => {
-    const availableEmailProviders = [
-        "hotmail.com",
-        "gmail.com",
-        "yahoo.com",
-        "outlook.com"
-    ];
-    const [selectedEmailProvider, setSelectedEmailProvider] = useState();
+    const selectedEmailProvider = useSelector(
+        (state) => state.clientsTable.value.filters.emailProvider
+    );
+    const dispatch = useDispatch();
 
     return (
         <Listbox
             value={selectedEmailProvider}
-            onChange={setSelectedEmailProvider}
+            onChange={(value) => dispatch(updateEmailProviderFilter(value))}
             className="relative"
             as="div"
         >
@@ -292,10 +274,10 @@ const EmailProviderSelect = () => {
                 leaveTo="opacity-0 translate-y-2"
             >
                 <Listbox.Options className="absolute mt-2 w-full overflow-auto rounded-xl bg-white text-base shadow-lg z-10">
-                    {availableEmailProviders.map((availableCountry) => (
+                    {availableEmailProviders.map((availableEmailProvider) => (
                         <Listbox.Option
-                            key={availableCountry}
-                            value={availableCountry}
+                            key={availableEmailProvider}
+                            value={availableEmailProvider}
                             className={({ active }) =>
                                 `relative select-none py-2 px-4 ${
                                     active
@@ -310,7 +292,7 @@ const EmailProviderSelect = () => {
                                         selected ? "font-medium" : "font-normal"
                                     }`}
                                 >
-                                    {availableCountry}
+                                    {availableEmailProvider}
                                 </span>
                             )}
                         </Listbox.Option>
@@ -325,4 +307,4 @@ function capitalizeString(string) {
     return string[0].toUpperCase() + string.slice(1).toLowerCase();
 }
 
-export default FiltersBtn;
+export default FiltersPopover;

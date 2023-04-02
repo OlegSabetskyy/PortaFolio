@@ -12,7 +12,7 @@ const Button = React.forwardRef(
         ref
     ) => {
         const primaryBtnClassNames =
-            "bg-blue-600 text-blue-50 hover:bg-blue-800";
+            "bg-blue-600 text-blue-50 hover:bg-blue-700";
         const secondaryBtnClassNames =
             "bg-blue-50 text-blue-700 hover:bg-blue-100";
         const deleteBtnClassNames = "bg-red-600 text-red-50 hover:bg-red-700";
@@ -37,7 +37,7 @@ const Button = React.forwardRef(
 
         return (
             <button
-                className={`flex gap-2 px-3 py-2 rounded-2xl items-center ${variantClassNames} ${extraClassNames}`}
+                className={`flex gap-2 px-3 py-2 rounded-2xl items-center ${variantClassNames} ${extraClassNames} outline-none`}
                 onClick={onClick}
                 ref={ref}
                 {...extraProps}

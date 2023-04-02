@@ -1,31 +1,47 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
     createColumnHelper,
     flexRender,
     getCoreRowModel,
     getSortedRowModel,
     useReactTable,
-    getPaginationRowModel
+    getPaginationRowModel,
+    getFilteredRowModel
 } from "@tanstack/react-table";
-import { tableData } from "../data/TableData";
 import Checkbox from "./Checkbox";
 import {
     ChevronDownIcon,
     ChevronUpIcon,
     EyeIcon,
-    TrashIcon,
-    XMarkIcon
+    TrashIcon
 } from "@heroicons/react/24/outline";
 import Button from "./Button";
-import Drawer from "./Drawer";
+import { useSelector, useDispatch } from "react-redux";
+import {
+    fetchClients,
+    setSelectedRows,
+    updateSearchFilter
+} from "../features/clientsTableSlice";
+import "react-toastify/dist/ReactToastify.css";
 
-const ClientsTable = () => {
-    const [data, setData] = useState(() => [...tableData]);
-    const [currentDataOnDisplay, setCurrentDataOnDisplay] = useState(data[0]);
+const ClientsTable = ({
+    openDeleteModal,
+    setItemIdOnWhichDeleteModalWasOpened,
+    openDrawerDetails,
+    updateDetailsOnDisplay,
+    triggerSelectReRender,
+    resetTriggerSelectReRender
+}) => {
+    const clientsTable = useSelector((state) => state.clientsTable.value);
+    const dispatch = useDispatch();
     const [sorting, setSorting] = useState([]);
+    const [selectedRows, setRowSelection] = useState({});
     const columnHelper = createColumnHelper();
-    const columns = [
-        columnHelper.accessor("select", {
+    const [columnFilters, setColumnFilters] = useState([]);
+
+    const columns = useMemo(() => [
+        columnHelper.display({
+            id: "select",
             header: ({ table }) => (
                 <Checkbox
                     {...{
@@ -39,22 +55,24 @@ const ClientsTable = () => {
                 <Checkbox
                     {...{
                         checked: row.getIsSelected(),
-                        disabled: !row.getCanSelect(),
-                        indeterminate: row.getIsSomeSelected(),
                         onChange: row.getToggleSelectedHandler()
                     }}
                 />
-            ),
-            enableSorting: false
+            )
         }),
         ...["id", "name", "surname", "email", "country", "phone"].map((item) =>
             columnHelper.accessor(item.toString(), {
                 header: (row) => <HeaderWrapper>{row.header.id}</HeaderWrapper>,
-                cell: (row) => <span>{row.getValue()}</span>
+                cell: (row) => (
+                    <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                        {row.getValue()}
+                    </span>
+                ),
+                enableColumnFilter: true
             })
         ),
-        columnHelper.accessor("details", {
-            header: () => "",
+        columnHelper.display({
+            id: "details",
             cell: ({ row }) => (
                 <Button
                     variant="secondary"
@@ -62,40 +80,145 @@ const ClientsTable = () => {
                         "flex items-center justify-center w-8 aspect-square rounded-lg !p-0"
                     }
                     onClick={() => {
-                        setCurrentDataOnDisplay(row.original);
-                        setDrawerDetailsIsOpen(true);
+                        setItemIdOnWhichDeleteModalWasOpened(
+                            row.getValue("id")
+                        );
+                        updateDetailsOnDisplay(row.original);
+                        openDrawerDetails();
                     }}
                 >
                     <EyeIcon className="w-4 aspect-square" />
                 </Button>
             )
         }),
-        columnHelper.accessor("delete", {
-            header: () => "",
-            cell: () => (
+        columnHelper.display({
+            id: "delete",
+            cell: ({ row }) => (
                 <Button
                     variant="delete-secondary"
                     className={
                         "flex items-center justify-center w-8 aspect-square rounded-lg !p-0"
                     }
+                    onClick={() => {
+                        setItemIdOnWhichDeleteModalWasOpened(
+                            row.getValue("id")
+                        );
+                        openDeleteModal();
+                    }}
                 >
                     <TrashIcon className="w-4 aspect-square" />
                 </Button>
             )
         })
-    ];
+    ]);
+
     const table = useReactTable({
-        data,
+        data: clientsTable.clients,
         columns,
         state: {
-            sorting
+            sorting,
+            rowSelection: selectedRows,
+            globalFilter: clientsTable.filters.search,
+            columnFilters
         },
-        onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
+        getRowId: (row) => row.id,
+
+        // row selection
+        enableRowSelection: true,
+        onRowSelectionChange: (value) => {
+            setRowSelection(value);
+        },
+
+        // sort
+        onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
-        getPaginationRowModel: getPaginationRowModel()
+
+        // pagination
+        getPaginationRowModel: getPaginationRowModel(),
+
+        // filters
+        enableFilters: true,
+        enableGlobalFilter: true,
+        enableColumnFilters: true,
+        getFilteredRowModel: getFilteredRowModel(),
+        onGlobalFilterChange: (val) => dispatch(updateSearchFilter(val)),
+        globalFilterFn: (row, columnId, value) => {
+            return row
+                .getValue(columnId)
+                .toString()
+                .toLowerCase()
+                .includes(value.toLowerCase());
+        }
     });
-    const [drawerDetailsIsOpen, setDrawerDetailsIsOpen] = useState(false);
+
+    useEffect(() => {
+        dispatch(
+            setSelectedRows(
+                table.getSelectedRowModel().rows.map((row) => row.original)
+            )
+        );
+    }, [selectedRows]);
+
+    // fetch clients
+    useEffect(() => {
+        dispatch(fetchClients());
+    }, []);
+
+    // update table filters
+    useEffect(() => {
+        const translateInternalFiltersToTable = () => {
+            const tableFilters = [];
+
+            // filter by id
+            if (clientsTable.filters.id.min !== undefined) {
+                tableFilters.push({
+                    id: "id",
+                    value: [
+                        clientsTable.filters.id.min.toString(),
+                        clientsTable.filters.id.max.toString()
+                    ]
+                });
+            }
+
+            // filter by country
+            if (clientsTable.filters.id.min !== undefined) {
+                tableFilters.push({
+                    id: "country",
+                    value: clientsTable.filters.country
+                });
+            }
+
+            // filter by emailProvider
+            if (clientsTable.filters.emailProvider !== undefined) {
+                tableFilters.push({
+                    id: "email",
+                    value: "@" + clientsTable.filters.emailProvider
+                });
+            }
+
+            return tableFilters;
+        };
+
+        setColumnFilters(translateInternalFiltersToTable);
+    }, [clientsTable.filters]);
+
+    // update selected rows on the rowSelection variable
+    useEffect(() => {
+        if (!triggerSelectReRender) return;
+
+        const selectedRowsObj = {};
+        const selectedRowsArray = table
+            .getSelectedRowModel()
+            .rows.map((row) => row.original.id);
+
+        selectedRowsArray.map(
+            (selectedRow) => (selectedRowsObj[selectedRow] = true)
+        );
+
+        setRowSelection(selectedRowsObj);
+        resetTriggerSelectReRender();
+    }, [triggerSelectReRender]);
 
     return (
         <div className="flex flex-col gap-4">
@@ -111,8 +234,7 @@ const ClientsTable = () => {
                                 key={header.id}
                                 className={`flex ${
                                     headerClassNamesPerColumn[header.id] || ""
-                                }
-                                    `}
+                                }`}
                             >
                                 <div
                                     className={`flex select-none
@@ -136,6 +258,7 @@ const ClientsTable = () => {
                     </div>
                 ))}
             </div>
+
             {/* table body */}
             <div className="flex flex-col gap-5">
                 {table.getRowModel().rows.map((row) => (
@@ -159,6 +282,7 @@ const ClientsTable = () => {
                     </div>
                 ))}
             </div>
+
             {/* pagination */}
             <div className="flex gap-4 justify-center pt-2">
                 {Array.from({ length: table.getPageCount() }, (_, index) => (
@@ -176,55 +300,7 @@ const ClientsTable = () => {
                     </Button>
                 ))}
             </div>
-            <DrawerDetails
-                isOpen={drawerDetailsIsOpen}
-                onClose={() => setDrawerDetailsIsOpen(false)}
-                details={currentDataOnDisplay}
-            />
         </div>
-    );
-};
-
-const DrawerDetails = ({ isOpen, onClose, details }) => {
-    return (
-        <Drawer isOpen={isOpen} position="bottom" onClose={onClose}>
-            <div className="rounded-tl-2xl rounded-tr-2xl bg-white flex flex-col p-4 h-full gap-2">
-                <button
-                    className="self-end text-slate-500 hover:text-slate-800 focus:text-slate-800"
-                    onClick={onClose}
-                >
-                    <XMarkIcon className="w-8 h-8" />
-                </button>
-
-                <div className="flex flex-col gap-5 flex-grow overflow-y-auto">
-                    {Object.entries(details).map(
-                        ([key, value], index, array) => (
-                            <div
-                                key={index}
-                                className={`flex flex-col gap-2 pb-4 ${
-                                    index != array.length - 1 &&
-                                    "border-b-[1px] border-slate-100 border-dashed"
-                                }`}
-                            >
-                                <p className="text-slate-400 text-base capitalize">
-                                    {key}
-                                </p>
-                                <p className="text-slate-900 text-base">
-                                    {value}
-                                </p>
-                            </div>
-                        )
-                    )}
-                </div>
-
-                <Button
-                    variant="delete"
-                    className={"py-4 flex justify-center text-base"}
-                >
-                    Delete
-                </Button>
-            </div>
-        </Drawer>
     );
 };
 
@@ -252,9 +328,9 @@ const headerClassNamesPerColumn = {
     id: "w-10",
     name: "w-20",
     surname: "w-36 hidden min-[450px]:flex",
-    email: "w-56 hidden min-[700px]:flex",
+    email: "w-64 hidden min-[700px]:flex",
     country: "w-24 hidden min-[900px]:flex",
-    phone: "w-32 hidden min-[1000px]:flex",
+    phone: "w-36 hidden min-[1000px]:flex",
     delete: "hidden flex-grow justify-end min-[1000px]:flex",
     details: "flex flex-grow justify-end min-[1000px]:hidden"
 };

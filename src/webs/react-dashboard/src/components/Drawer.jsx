@@ -57,8 +57,8 @@ const Drawer = ({
             aria-hidden={isOpen ? "true" : "false"}
             className={`${containerClassName}`}
         >
+            {/* drawer */}
             <ReactFocusLock>
-                {/* drawer */}
                 <Transition
                     role="dialog"
                     show={isOpen}

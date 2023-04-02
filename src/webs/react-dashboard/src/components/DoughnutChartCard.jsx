@@ -60,7 +60,10 @@ const showOnInit = {
     id: "hideOnInit",
     beforeDraw(chart, args, options) {
         setTimeout(() => {
-            chart.canvas.style.display = "flex";
+            // if changing pages fast then this throws an undefined error
+            try {
+                chart.canvas.style.display = "flex";
+            } catch {}
         }, 1);
     }
 };
@@ -110,11 +113,15 @@ const htmlLegendPlugin = {
             };
 
             // Color box
-            boxSpan = document.createElement("span");
-            boxSpan.classList = "rounded-full h-4 aspect-square mr-3 sm:h-5";
-            boxSpan.style.background = item.fillStyle;
-            boxSpan.style.borderColor = item.strokeStyle;
-            boxSpan.style.borderWidth = item.lineWidth + "px";
+            // if changing pages fast then this throws an undefined error
+            try {
+                boxSpan = document.createElement("span");
+                boxSpan.classList =
+                    "rounded-full h-4 aspect-square mr-3 sm:h-5";
+                boxSpan.style.background = item.fillStyle;
+                boxSpan.style.borderColor = item.strokeStyle;
+                boxSpan.style.borderWidth = item.lineWidth + "px";
+            } catch {}
 
             // Text container
             textContainer = document.createElement("div");

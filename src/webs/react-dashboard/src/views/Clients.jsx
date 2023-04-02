@@ -1,34 +1,88 @@
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import { createPortal } from "react-dom";
 import ClientsTable from "../components/ClientsTable";
-import FiltersBtn from "../components/FiltersBtn";
+import { useSelector, useDispatch } from "react-redux/es/exports";
+import DeleteModal from "../components/DeleteModal";
+import { ToastContainer, toast } from "react-toastify";
+import { deleteClients } from "../features/clientsTableSlice";
+import ClientsHeader from "../components/ClientsHeader";
+import DetailsDrawer from "../components/DetailsDrawer";
 
 const Clients = () => {
+    const selectedRows = useSelector(
+        (state) => state.clientsTable.value.selectedRows
+    );
+    const dispatch = useDispatch();
+
+    const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+    const [
+        itemIdOnWhichDeleteModalWasOpened,
+        setItemIdOnWhichDeleteModalWasOpened
+    ] = useState(0);
+    const [drawerDetailsIsOpen, setDrawerDetailsIsOpen] = useState(false);
+    const [currentDetailsDataOnDisplay, setCurrentDetailsDataOnDisplay] =
+        useState({});
+    const [deleteModalOneOrMany, setDeleteModalOneOrMany] = useState("one");
+    const [triggerSelectReRender, setTriggerSelectReRender] = useState(false);
+
     return (
         <div className="flex flex-col gap-5 rounded-2xl bg-white p-4">
-            <Header />
-            <ClientsTable />
-        </div>
-    );
-};
-
-const Header = () => {
-    return (
-        <div className="flex justify-between gap-4">
-            <div className="relative flex grow">
-                <input
-                    variant="text"
-                    placeholder="Search"
-                    className="rounded-2xl bg-slate-100 h-full w-full placeholder:text-slate-500 placeholder:text-base py-2 pr-4 pl-10"
-                    id="search-input"
-                />
-                <MagnifyingGlassIcon
-                    className="text-slate-400 absolute top-2 left-2 h-6"
-                    onClick={() =>
-                        document.getElementById("search-input").focus()
-                    }
-                />
-            </div>
-            <FiltersBtn />
+            <ClientsHeader
+                openDeleteModal={() => {
+                    setDeleteModalOneOrMany("many");
+                    setDeleteModalIsOpen(true);
+                }}
+            />
+            <ClientsTable
+                openDeleteModal={() => {
+                    setDeleteModalOneOrMany("one");
+                    setDeleteModalIsOpen(true);
+                }}
+                setItemIdOnWhichDeleteModalWasOpened={
+                    setItemIdOnWhichDeleteModalWasOpened
+                }
+                openDrawerDetails={() => setDrawerDetailsIsOpen(true)}
+                updateDetailsOnDisplay={(id) =>
+                    setCurrentDetailsDataOnDisplay(id)
+                }
+                triggerSelectReRender={triggerSelectReRender}
+                resetTriggerSelectReRender={() =>
+                    setTriggerSelectReRender(false)
+                }
+            />
+            {/* details drawer */}
+            <DetailsDrawer
+                isOpen={drawerDetailsIsOpen}
+                closeModal={() => setDrawerDetailsIsOpen(false)}
+                details={currentDetailsDataOnDisplay}
+                onDelete={() => {
+                    setDeleteModalOneOrMany("one");
+                    setDeleteModalIsOpen(true);
+                }}
+            />
+            {/* delete modal */}
+            <DeleteModal
+                isOpen={deleteModalIsOpen}
+                onClose={() => setDeleteModalIsOpen(false)}
+                onDelete={() => {
+                    dispatch(
+                        deleteClients(
+                            deleteModalOneOrMany == "one"
+                                ? [itemIdOnWhichDeleteModalWasOpened]
+                                : selectedRows.map(
+                                      (selectedRow) => selectedRow.id
+                                  )
+                        )
+                    );
+                    setDeleteModalIsOpen(false);
+                    setDrawerDetailsIsOpen(false);
+                    toast.success("Deleted successfully");
+                    setTriggerSelectReRender(true);
+                }}
+                oneOrMany={deleteModalOneOrMany}
+            />
+            {/* toast */}
+            {createPortal(<ToastContainer />, document.getElementById("root"))}
         </div>
     );
 };

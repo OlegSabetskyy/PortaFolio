@@ -1,40 +1,21 @@
-let tableData = [
-    {
-        id: 1,
-        name: "Name",
-        surname: "Surname",
-        email: "email@email.com",
-        phone: "+34 123 45 67 89",
-        country: "Spain"
-    },
-    {
-        id: 2,
-        name: "Name2",
-        surname: "Long surname ver",
-        email: "some-long-ema@hotmail.com",
-        phone: "+34 123 45 67 89",
-        country: "Spain2"
-    },
-    {
-        id: 3,
-        name: "Name3",
-        surname: "Surname3",
-        email: "email3@email.com",
-        phone: "+34 123 45 67 89",
-        country: "Spain3"
-    }
-];
-tableData = [
-    ...tableData,
-    ...tableData,
-    ...tableData,
-    ...tableData,
-    ...tableData,
-    ...tableData,
-    ...tableData,
-    ...tableData,
-    ...tableData,
-    ...tableData
-];
+import { faker } from "@faker-js/faker";
 
-export { tableData };
+const availableCountries = ["Spain", "Ukraine", "Germany", "France", "Belgium"];
+const availableEmailProviders = ["hotmail.com", "gmail.com", "yahoo.com"];
+const tableData = Array.from({ length: 30 }, (_, index) => ({
+    id: index + 1,
+    name: faker.name.firstName(),
+    surname: faker.name.firstName() + " " + faker.name.firstName(),
+    email: faker.internet.email(
+        undefined,
+        undefined,
+        availableEmailProviders[
+            parseInt(Math.random() * availableEmailProviders.length)
+        ]
+    ),
+    phone: faker.phone.number(),
+    country:
+        availableCountries[parseInt(Math.random() * availableCountries.length)]
+}));
+
+export { tableData, availableCountries, availableEmailProviders };
