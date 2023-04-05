@@ -1,0 +1,52 @@
+revert one commit
+----------------------------
+git revert <commit-hash>
+
+
+revert one file
+---------------------------
+git checkout <commit_id> -- file1/to/revert file2/to/revert
+
+
+aceptar cambis amb conflicte (git)
+-------------------------
+git checkout --theirs path/to/file // es pot utilitzar també "ours" o * al final
+
+
+reset branch to remote
+--------------------------
+git reset --hard origin/<branch-name>
+
+
+delete branch
+---------------------------
+git branch -d <nom_branca> // en local
+git push -d origin <nom_branca> // en remot
+
+
+revertir tots els commits fins X commit (i pots veure cambis fets)
+-------------------------
+git revert --no-commit 049d97c421398eae8b4fe1f8ca05bc1218d9d2cd..HEAD -n HEAD
+
+
+pull i acceptar cambis de remote en X path
+-------------------------
+git pull -X theirs ./some/path/*
+git pull -s recursive -X theirs https://git... // remote_repo
+
+
+git revert easy (des de arrel del projecte)
+-----------------------
+git checkout -f <commit_id> -- *
+git commit -m "abcd"
+git push
+
+
+veure canvis fitxer X branca a Y branca
+----------------------------------------
+git difftool <nom_branca_endarrerida> <nom_branca_avançada> -- <ruta_fitxer>
+
+
+eliminar de tracked
+--------------------------
+git rm -r --cached <ruta_carpeta> //en local, per remote: fa falta fer commit i push després

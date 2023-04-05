@@ -1,0 +1,3 @@
+veure quins programes utilitzen quin port
+-----------------------
+netstat -aon | find /i "listening"
