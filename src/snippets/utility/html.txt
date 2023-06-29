@@ -1,3 +1,0 @@
-<script src="js/script.js"></script>
-// async: run as soon as script it's fully loaded
-// defer: after the page has fully loaded

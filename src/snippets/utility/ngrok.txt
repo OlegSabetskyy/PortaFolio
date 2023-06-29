@@ -1,3 +1,0 @@
-run ngrok (route localhost:123 to ngrok url)
-------------------------
-ngrok http https://localhost:<123>/ --region eu

@@ -1,7 +1,0 @@
-regex validations
---------------------
-phone -> /^(\+){1}(\d|\s|\(|\)){9,15}$/
-email -> /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/
-
-
-regex-site -> https://www.regular-expressions.info/index.html

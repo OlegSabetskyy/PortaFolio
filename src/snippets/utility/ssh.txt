@@ -1,3 +1,0 @@
-connect to server
----------------------
-ssh user@<server-ip>

@@ -1,4 +1,0 @@
-exemple petició POST amb curl
-----------------------------
-
-curl -X POST -H "Content-Type: application/json" -d '{"hello":"world"}' 'https://localhost/api/api-name'

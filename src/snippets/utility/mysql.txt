@@ -1,3 +1,0 @@
-connect to db through commands
--------------------------------
-mysql -u <user> -p
