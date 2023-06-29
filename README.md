@@ -1,6 +1,6 @@
 # Hola Mundo, soy Oleg! 👋
 
-<div style="display:flex;justify-content:center;">
+<div style="text-align:center;">
     <a href="https://www.linkedin.com/in/oleg-sabetskyy-puntyak-116692200/"><img src="img/misc/banner.jpg" alt="Oleg Sabetskyy banner"></a>
 </div>
 
